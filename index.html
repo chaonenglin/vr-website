@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>虚拟现实 (VR) — 沉浸式技术全景介绍</title>
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #12121a;
+    --bg3: #1a1a2e;
+    --accent: #7c3aed;
+    --accent2: #a78bfa;
+    --text: #e2e2ed;
+    --text2: #a0a0b8;
+    --border: #252540;
+    --grad: linear-gradient(135deg, #7c3aed, #3b82f6);
+    --radius: 12px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    font-family: -apple-system, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.7;
+  }
+
+  /* Navigation */
+  nav {
+    position: fixed; top:0; width:100%; z-index:100;
+    background: rgba(10,10,15,0.85); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .inner {
+    max-width: 1200px; margin:0 auto; padding:0 24px;
+    display:flex; align-items:center; justify-content:space-between; height:60px;
+  }
+  nav .logo { font-size:1.3rem; font-weight:700; background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  nav ul { display:flex; gap:28px; list-style:none; }
+  nav a { color:var(--text2); text-decoration:none; font-size:0.9rem; transition:color .2s; }
+  nav a:hover { color:var(--accent2); }
+
+  /* Sections */
+  section { padding:100px 24px; }
+  .container { max-width:1100px; margin:0 auto; }
+  h2 { font-size:2.2rem; margin-bottom:16px; background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  h3 { font-size:1.4rem; margin:24px 0 12px; color:var(--accent2); }
+  .subtitle { color:var(--text2); font-size:1.1rem; margin-bottom:40px; }
+
+  /* Hero */
+  #hero {
+    height:100vh; display:flex; align-items:center; justify-content:center; text-align:center;
+    background: radial-gradient(ellipse at center, #1a1040 0%, var(--bg) 70%);
+    position:relative; overflow:hidden;
+  }
+  #hero::before {
+    content:''; position:absolute; inset:0;
+    background: url('images/VRChat_2026-05-20_23-16-09.171_1920x1080.png') center/cover;
+    opacity:0.25; filter:blur(2px);
+  }
+  #hero .hero-content { position:relative; z-index:1; }
+  #hero h1 { font-size:3.5rem; font-weight:800; margin-bottom:20px; line-height:1.2; }
+  #hero h1 span { background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  #hero p { font-size:1.2rem; color:var(--text2); max-width:600px; margin:0 auto 32px; }
+  .btn {
+    display:inline-block; padding:14px 36px; border-radius:50px;
+    background:var(--grad); color:#fff; text-decoration:none; font-weight:600;
+    transition:transform .2s, box-shadow .2s;
+  }
+  .btn:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(124,58,237,0.4); }
+
+  /* Stats */
+  .stats { display:flex; gap:40px; justify-content:center; flex-wrap:wrap; margin-top:48px; }
+  .stat { text-align:center; }
+  .stat .num { font-size:2.5rem; font-weight:800; background:var(--grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+  .stat .label { color:var(--text2); font-size:0.9rem; }
+
+  /* Cards */
+  .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:24px; margin-top:32px; }
+  .card {
+    background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius);
+    padding:32px; transition:border-color .3s, transform .3s;
+  }
+  .card:hover { border-color:var(--accent); transform:translateY(-4px); }
+  .card .icon { font-size:2rem; margin-bottom:16px; }
+  .card h4 { font-size:1.15rem; margin-bottom:10px; }
+
+  /* Timeline */
+  .timeline { position:relative; padding-left:40px; }
+  .timeline::before { content:''; position:absolute; left:16px; top:0; bottom:0; width:2px; background:var(--grad); }
+  .timeline-item { position:relative; margin-bottom:32px; padding-left:28px; }
+  .timeline-item::before {
+    content:''; position:absolute; left:-28px; top:6px;
+    width:14px; height:14px; border-radius:50%; background:var(--accent);
+    border:3px solid var(--bg);
+  }
+  .timeline-item .year { font-size:0.85rem; color:var(--accent2); font-weight:700; }
+  .timeline-item h4 { margin:4px 0 6px; }
+
+  /* Device table */
+  .table-wrap { overflow-x:auto; margin-top:32px; }
+  table { width:100%; border-collapse:collapse; }
+  th, td { padding:14px 18px; text-align:left; border-bottom:1px solid var(--border); }
+  th { color:var(--accent2); font-weight:600; font-size:0.85rem; text-transform:uppercase; }
+  td { font-size:0.95rem; }
+  tr:hover td { background:var(--bg3); }
+
+  /* Image showcase */
+  .img-showcase { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px,1fr)); gap:20px; margin-top:32px; }
+  .img-showcase img {
+    width:100%; border-radius:var(--radius); border:1px solid var(--border);
+    transition:transform .3s, border-color .3s; cursor:pointer;
+  }
+  .img-showcase img:hover { transform:scale(1.03); border-color:var(--accent); }
+
+  /* Footer */
+  footer { background:var(--bg2); border-top:1px solid var(--border); padding:40px 24px; text-align:center; color:var(--text2); font-size:0.9rem; }
+
+  /* Responsive */
+  @media (max-width:768px) {
+    nav ul { display:none; }
+    #hero h1 { font-size:2.2rem; }
+    section { padding:60px 16px; }
+    h2 { font-size:1.7rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <div class="logo">VR 全景</div>
+    <ul>
+      <li><a href="#about">什么是VR</a></li>
+      <li><a href="#history">发展历史</a></li>
+      <li><a href="#tech">技术原理</a></li>
+      <li><a href="#devices">主流设备</a></li>
+      <li><a href="#applications">应用场景</a></li>
+      <li><a href="#future">未来趋势</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section id="hero">
+  <div class="hero-content">
+    <h1>探索 <span>虚拟现实</span> 的世界</h1>
+    <p>从科幻概念到日常工具，VR技术正在重塑我们工作、学习、娱乐的方式</p>
+    <a href="#about" class="btn">开始探索</a>
+    <div class="stats">
+      <div class="stat"><div class="num">$350亿+</div><div class="label">2025全球市场规模</div></div>
+      <div class="stat"><div class="num">23%</div><div class="label">年复合增长率</div></div>
+      <div class="stat"><div class="num">2.8亿</div><div class="label">全球VR用户</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="container">
+    <h2>什么是虚拟现实 (VR)？</h2>
+    <p class="subtitle">VR 是一种利用计算机生成三维虚拟环境的技术，用户通过头戴式显示设备获得身临其境的沉浸式体验。</p>
+    <div class="card-grid">
+      <div class="card">
+        <div class="icon">🔍</div>
+        <h4>沉浸感 (Immersion)</h4>
+        <p>通过高分辨率显示、宽视场角和空间音频，让大脑相信虚拟环境是真实的。现代VR头显可达单眼4K分辨率，FOV超过110°。</p>
+      </div>
+      <div class="card">
+        <div class="icon">🤚</div>
+        <h4>交互性 (Interaction)</h4>
+        <p>通过手柄、手势识别、眼动追踪等技术，用户可以自然地与虚拟世界互动——抓取物体、按压按钮、甚至与虚拟角色对话。</p>
+      </div>
+      <div class="card">
+        <div class="icon">🧠</div>
+        <h4>想象力 (Imagination)</h4>
+        <p>VR打破了物理规律的约束，用户可以在虚拟空间中体验任何想象得到的场景——从太空漫步到微观细胞探索。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="history" style="background:var(--bg2);">
+  <div class="container">
+    <h2>VR 发展简史</h2>
+    <p class="subtitle">从实验室的原型机到走入千家万户，VR技术走过了半个多世纪的历程。</p>
+    <div class="timeline">
+      <div class="timeline-item"><div class="year">1968</div><h4>第一个头戴式显示器</h4><p>计算机图形学先驱 Ivan Sutherland 开发了"达摩克利斯之剑"——世界上第一个头戴式3D显示系统，设备太重以至于需要从天花板悬挂。</p></div>
+      <div class="timeline-item"><div class="year">1987</div><h4>Virtual Reality 术语诞生</h4><p>Jaron Lanier 创立 VPL Research 公司，首次提出 "Virtual Reality" 这一术语，并开发了最早的商业VR产品——DataGlove 和 EyePhone。</p></div>
+      <div class="timeline-item"><div class="year">2012</div><h4>Oculus 众筹革命</h4><p>Palmer Luckey 在 Kickstarter 发起 Oculus Rift 众筹，重新点燃了现代VR产业的火焰。两年后，Facebook 以20亿美元收购 Oculus。</p></div>
+      <div class="timeline-item"><div class="year">2016</div><h4>消费级VR元年</h4><p>Oculus Rift、HTC Vive、PlayStation VR 三大头显相继发布，标志着VR正式进入消费市场。</p></div>
+      <div class="timeline-item"><div class="year">2019-2020</div><h4>无线一体机时代</h4><p>Oculus Quest 系列开创无线一体机形态。Quest 2 售价仅299美元，成为VR行业首个销量突破2000万台的爆款产品。</p></div>
+      <div class="timeline-item"><div class="year">2023-2024</div><h4>Apple Vision Pro 与空间计算</h4><p>苹果发布 Vision Pro，售价3499美元，定义为"空间计算机"。双4K Micro OLED屏幕、眼动+手势交互，代表消费级VR/MR硬件的顶峰。</p></div>
+      <div class="timeline-item"><div class="year">2025-2026</div><h4>AI+VR 深度融合</h4><p>AI成为VR核心催化剂——生成式AI加速3D内容创建，大语言模型驱动智能虚拟角色，5G云渲染实现轻量化设备上的电影级画质。全球VR市场规模突破350亿美元。</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="tech">
+  <div class="container">
+    <h2>VR 技术原理</h2>
+    <p class="subtitle">VR系统由四大核心模块协同工作，在毫秒级别内完成从姿态捕捉到画面呈现的完整流程。</p>
+
+    <h3>1. 显示系统 — 构建立体视觉</h3>
+    <p>VR头显利用<strong>双眼视差</strong>原理，为左右眼分别渲染独立画面（间距约6.5cm），配合专用透镜将图像聚焦于视网膜。现代VR显示器采用<strong>低余晖技术</strong>，每帧仅显示极短时间以减少运动模糊。主流规格：单眼4K、90-120Hz刷新率、110°+ FOV。</p>
+
+    <h3>2. 追踪系统 — 六自由度动作捕捉</h3>
+    <p>IMU惯性测量单元（陀螺仪+加速度计+磁力计）实时追踪头部<strong>6DoF运动</strong>（3个旋转+3个平移自由度）。配合摄像头SLAM定位实现毫秒级精度的空间追踪。Valve Lighthouse基站方案可达0.1mm级定位精度。</p>
+
+    <h3>3. 渲染系统 — 注视点渲染</h3>
+    <p>基于人眼视觉特性——中央凹仅占视网膜1%面积却集中90%感知细胞。注视点渲染将GPU算力集中于视线焦点区域，可降低<strong>40-70% GPU负载</strong>。时间扭曲（Timewarp）技术在帧显示前根据最新头部姿态进行微调补偿，进一步降低感知延迟。</p>
+
+    <h3>4. 空间音频与反馈</h3>
+    <p>Dolby Atmos配合头部追踪实现3D音效定位，转头时声音来源方向随之变化。触觉手套、超声波反馈、甚至温度与气味模拟，正在从实验室走向消费市场。</p>
+
+    <div class="stats" style="margin-top:48px;">
+      <div class="stat"><div class="num">&lt;20ms</div><div class="label">运动到光子延迟</div></div>
+      <div class="stat"><div class="num">≥90Hz</div><div class="label">最低刷新率要求</div></div>
+      <div class="stat"><div class="num">110°+</div><div class="label">视场角 FOV</div></div>
+      <div class="stat"><div class="num">6DoF</div><div class="label">追踪自由度</div></div>
+    </div>
+
+    <h3 style="margin-top:40px;">VR 体验截图</h3>
+    <div class="img-showcase">
+      <img src="images/VRChat_2026-05-05_01-24-02.480_1920x1080.png" alt="VRChat VR社交体验" loading="lazy">
+      <img src="images/VRChat_2026-04-26_23-20-22.397_1920x1080.png" alt="VRChat 虚拟场景" loading="lazy">
+      <img src="images/VRChat_2026-03-15_20-40-48.031_2048x1440.png" alt="VRChat 虚拟世界" loading="lazy">
+      <img src="images/Focusonyou_1774530301.png" alt="FOCUS on YOU VR游戏" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<section id="devices" style="background:var(--bg2);">
+  <div class="container">
+    <h2>主流 VR/MR 设备对比</h2>
+    <p class="subtitle">2025-2026年市场上最具代表性的头显设备一览。</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>设备</th><th>类型</th><th>分辨率</th><th>刷新率</th><th>价格</th><th>亮点</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Meta Quest 3</strong></td><td>VR/MR一体机</td><td>单眼2064×2208</td><td>90/120Hz</td><td>$499</td><td>性价比之王，销量超2000万台</td></tr>
+          <tr><td><strong>Apple Vision Pro</strong></td><td>空间计算 (MR)</td><td>单眼4K Micro OLED</td><td>90/96/100Hz</td><td>$3,499</td><td>极致显示、眼动+手势交互</td></tr>
+          <tr><td><strong>HTC Vive XR Elite</strong></td><td>VR/MR一体机</td><td>单眼1920×1920</td><td>90Hz</td><td>$1,099</td><td>模块化设计、轻量化</td></tr>
+          <tr><td><strong>Samsung Galaxy XR</strong></td><td>MR一体机</td><td>双4K Micro OLED</td><td>待公布</td><td>待公布</td><td>Android XR + Gemini AI</td></tr>
+          <tr><td><strong>PlayStation VR2</strong></td><td>PS5专用VR</td><td>单眼2000×2040</td><td>90/120Hz</td><td>$549</td><td>OLED HDR、眼球追踪、自适应扳机</td></tr>
+          <tr><td><strong>Valve Index</strong></td><td>PC VR</td><td>单眼1440×1600</td><td>120/144Hz</td><td>$999</td><td>指关节追踪、144Hz高刷</td></tr>
+          <tr><td><strong>Pico 4 (字节跳动)</strong></td><td>VR一体机</td><td>单眼2160×2160</td><td>72/90Hz</td><td>¥2,499</td><td>中国市场第二、Pancake透镜</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:48px;">三大技术路线对比</h3>
+    <div class="card-grid">
+      <div class="card">
+        <h4>VR · 全封闭沉浸</h4>
+        <p><strong>代表：</strong>Meta Quest 系列</p>
+        <p>完全封闭视野，隔绝现实世界。体验纯粹，成本低，但无法看到周围环境。适合游戏、观影、虚拟社交。</p>
+      </div>
+      <div class="card">
+        <h4>AR · 光学透视 (OST)</h4>
+        <p><strong>代表：</strong>HoloLens、Google Glass</p>
+        <p>透明镜片叠加虚拟信息到真实视野。轻便自然，但显示技术受限，FOV较小。适合工业巡检、信息提示。</p>
+      </div>
+      <div class="card">
+        <h4>MR · 视频透视 (VST)</h4>
+        <p><strong>代表：</strong>Apple Vision Pro、Quest 3</p>
+        <p>摄像头拍摄真实环境再与虚拟融合显示。视觉效果最好，虚实融合自然。是目前最主流的高端方案。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="applications">
+  <div class="container">
+    <h2>VR 应用场景</h2>
+    <p class="subtitle">VR远超游戏，正在深刻改变各行各业的运作方式。</p>
+    <div class="card-grid">
+      <div class="card">
+        <div class="icon">🎮</div>
+        <h4>游戏与娱乐</h4>
+        <p>70%的VR用户定期玩游戏，是VR最大的消费场景。Meta Quest生态累计消费超20亿美元。VR大空间LBE项目在中国蓬勃发展，2025年近200个新项目落地。</p>
+      </div>
+      <div class="card">
+        <div class="icon">🏫</div>
+        <h4>教育与培训</h4>
+        <p>约50%高校已开设VR课程。沉浸式学习提升知识留存率。红色教育、安全培训、技能实训等场景广泛应用。AI将教学内容"原汁原味"转化为VR交互逻辑。</p>
+      </div>
+      <div class="card">
+        <div class="icon">🏥</div>
+        <h4>医疗健康</h4>
+        <p>全球元宇宙医学培训市场预计2029年达111.1亿美元。外科手术模拟、远程诊疗、心理康复、疼痛管理等场景加速落地。69%的医疗高管计划投资VR技术。</p>
+      </div>
+      <div class="card">
+        <div class="icon">🏭</div>
+        <h4>工业与制造</h4>
+        <p>超过75%的财富500强企业使用VR进行培训与设计。数字孪生、远程协作、产品原型验证大幅缩短研发周期，降低差旅与样机成本。</p>
+      </div>
+      <div class="card">
+        <div class="icon">🎬</div>
+        <h4>VR影视</h4>
+        <p>2025年中国VR电影元年——首批VR电影公映许可证发放，首部VR电影《唐宫夜宴》上映。全球VR电影用户约2.8亿，中国占42%。</p>
+      </div>
+      <div class="card">
+        <div class="icon">🏛️</div>
+        <h4>文旅与文化遗产</h4>
+        <p>VR大空间项目让观众"走进"历史场景。故宫、敦煌等文化遗产通过VR技术实现数字化保护与沉浸式展示，观众可近距离体验珍贵文物。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="future" style="background:var(--bg2);">
+  <div class="container">
+    <h2>未来趋势 (2026及以后)</h2>
+    <p class="subtitle">VR/XR产业正站在新的转折点——从"展示工具"向"刚需生产力"转型。</p>
+
+    <h3>AI+VR 深度融合</h3>
+    <p>AI深度学习使VR内容生成更高效、交互更自然。生成式AI加速3D场景与资产创建、NeRF和3D Gaussian Splatting技术让真实世界快速数字化。大语言模型驱动的智能NPC能进行有意义的对话，虚拟世界不再"空荡荡"。</p>
+
+    <h3>眼镜化与轻量化</h3>
+    <p>从500克头显走向100克智能眼镜是行业的终极目标。Micro-OLED+Pancake光学技术使设备更薄更轻。业界预计到2030年代，AR眼镜可能取代智能手机成为主要数字交互界面。</p>
+
+    <h3>5G/6G + 云VR</h3>
+    <p>渲染任务转移到云端，头显仅负责显示和追踪。5G-Advanced带来的超低延迟让电影级画质在轻量设备上流畅运行。6G将进一步支持多用户超低延迟大规模体验。</p>
+
+    <h3>多感官全沉浸</h3>
+    <p>触摸、温度、气味、风力等反馈技术从实验走向实用。"全感VR"（Full-Sense VR）将视觉、听觉、触觉、甚至嗅觉融为一体，创造前所未有的沉浸体验。</p>
+
+    <div class="stats" style="margin-top:48px;">
+      <div class="stat"><div class="num">$895亿</div><div class="label">2033年全球市场预测</div></div>
+      <div class="stat"><div class="num">6I</div><div class="label">VR体验新框架</div></div>
+      <div class="stat"><div class="num">41%</div><div class="label">中国市场增速(全球第一)</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>数据来源：360iResearch、ResearchAndMarkets、VR陀螺、中国工信部 | 图片来自用户VRChat截图</p>
+  <p style="margin-top:8px;">© 2026 VR全景介绍 — 虚拟现实技术科普</p>
+</footer>
+
+</body>
+</html>
